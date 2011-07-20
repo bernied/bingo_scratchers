@@ -1,0 +1,24 @@
+I was inspired by an article [1] in Wired magazine about a geological statistician who found an algorithm that allowed him determine if a tic-tac-toe lottery "scatcher" [2] was likely a winner or not.
+
+I wondered if there were any other such kinds of lottery scratchers that might be hackable. I settled on the California "Doubling Line Bingo" scratcher. I also settled on using scheme [4].
+
+With a bingo scratcher you have two sections: the "caller's card" (call) and "your cards" (cards). There are four cards, any of which can score bingo if the numbers from the call appear in a row, column, the corners, a diagonal or an X.
+
+The call consists of 30 unknown numbers that are unique and range from 1 to 75. That means there are 75 choose 30 (781,879,430,625,942,976,880) possible calls. In reality there are less then that because the numbers that appear in the call are drawn from the set of numbers used in the four cards. This means you typically have more like 54 choose 30 (1,402,659,561,581,460) possible calls for a given scratcher.
+
+The cards consist of four tables, with each table being five square. The first column in the table can only have the numbers 1 through 15, the second 16 through 30, the third 31 through 45, and so on.
+
+My original thought was given a card, we know the numbers in the cards, but we don't know the numbers in the call. However, if we generate all possible calls we can get a distribution of how many wins via lines, corners and crosses. The hope was then given this probability distribution you could calculate a probability that the card was a winner.
+
+There are a couple of problems with this plan of attack. The first is that the number of calls is on the order of 2^51. Thats too many to brute force. The second problem is the assumption that the probability distribution actually gives you an accurate assessment of a given card. Just because a card has a high probability of not winning (ie there are a lot potential winners), doesn't mean the correct call will be "chosen".
+
+There are ways around these problems, such as using sampling instead of trying to enumerate the entire call space. For the second issue you just would need to buy a bunch of cards and see if there is any correlation between the probability distribution and the winners.
+
+Another way to solve this problem might be to use binary decision diagrams [5] to count the various winners and losers. I haven't really examined how good a technique this would be.
+
+
+[1] http://www.wired.com/magazine/2011/01/ff_lottery/all/1
+[2] http://www.calottery.com/Games/Scratchers/
+[3] http://www.calottery.com/Games/Scratchers/3ScratcherGallery/656-DoublingLineBingo.htm
+[4] http://dynamo.iro.umontreal.ca/~gambit/wiki/index.php/Main_Page
+[5] http://en.wikipedia.org/wiki/Binary_decision_diagram
