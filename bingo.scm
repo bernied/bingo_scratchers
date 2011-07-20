@@ -17,7 +17,7 @@
 	(remove-elem-rec l i 0 ))
 
 (define (remove-elem-rec l i j)
-	(if (>= j (length l))
+	(if (null? l)
 		l
 		(if (= i j)
 			(cdr l)
@@ -159,7 +159,7 @@
 
 (define (extract-corner-set dim table set)
  	(let* ((upper (car table))
-				(lower (caddr table))
+				(lower (list-ref table (- dim 1)))
 				(ul (car upper))
 				(ur (list-ref upper (- dim 1)))
 				(ll (car lower))
@@ -228,11 +228,11 @@
 			merge
 			i)))
 
-; 0	0 0 0 0 0 0 0 0 0 0	8488950	{}
-; 1	0 0 0 0 0 0 0 0 0 1	427482	H1
-; 2	0 0 0 0 0 0 0 0 1 0	437478	H2
-; 4	0 0 0 0 0 0 0 1 0 0	427482	H3
-; 8	0 0 0 0 0 0 1 0 0 0	427482	V1
+; 0	  0 0 0 0 0 0 0 0 0 0	8488950	{}
+; 1	  0 0 0 0 0 0 0 0 0 1	427482	H1
+; 2	  0 0 0 0 0 0 0 0 1 0	437478	H2
+; 4	  0 0 0 0 0 0 0 1 0 0	427482	H3
+; 8	  0 0 0 0 0 0 1 0 0 0	427482	V1
 ; 16	0 0 0 0 0 1 0 0 0 0	437478	V2
 ; 32	0 0 0 0 1 0 0 0 0 0	427482	V3
 ; 64	0 0 0 1 0 0 0 0 0 0	31824	C

@@ -1,0 +1,3 @@
+#!/bin/sh
+
+gsi ~~lib/syntax-case testeez.scm bingo.scm test-bingo.scm
