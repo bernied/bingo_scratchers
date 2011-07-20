@@ -73,6 +73,15 @@
 					(close-port port))
 					n))))
 
+(define (make-number-list-stream l)
+	(let ((current l))
+		(lambda ()
+			(if (null? current)
+				'#!eof
+				(let ((n (car current)))
+					(set! current (cdr current)) ; need to switch to real stream
+					n)))))
+
 (define (read-number-stream stream proc merge i)
 	(let ((b (stream)))
 		(if (eof-object? b)
@@ -311,7 +320,8 @@
 			((= none-symbol-count 4) 'none)
 			((= none-symbol-count 3)
 				(vector-ref winning-symbols (find-non-zero-symbol symbol-count)))
-				LAMb: more here!
+				)))
+				;;LAMb: more here!
 
 (define (bingo-3x3-histogram set t classifier)
 	(let* ((cs (classify-bingo-set set classifier))
@@ -322,22 +332,20 @@
 
 (define (bingo-3x3-sheet-histogram set t)
 	(let* ((cs (map (lambda (x) (classify-bingo-set x winning-classifier)) set))
-				(sheet-class (classify-bingo-3x3-sheet cs))
+				(sheet-class (classify-bingo-3x3-sheet-winners cs))
 				(v (table-ref t sheet-class 0)))
 		(begin
 			(table-set! t sheet-class (+ v 1))
 			t)))
 
-(define (bingo-3x3-histogram-stream bingo-table classifier)
-	(let*	((s (make-number-file-stream "27_11.txt"))
-				(t (make-table))
+(define (bingo-3x3-histogram-stream s bingo-table classifier)
+	(let*	((t (make-table))
 				(histogram (lambda (set t) (bingo-3x3-histogram set t classifier))))
 		(bingo-3x3-map-stream s bingo-table find-winners-set histogram t)	
 		t))
 
-(define (bingo-3x3-sheet-histogram-stream bingo-table)
-	(let*	((s (make-number-file-stream "27_11.txt"))
-				(t (make-table))
+(define (bingo-3x3-sheet-histogram-stream s bingo-table)
+	(let*	((t (make-table))
 				(histogram (lambda (set t) (bingo-3x3-sheet-histogram set t))))
 		(bingo-3x3-sheet-map-stream s bingo-table find-winners-set histogram t)	
 		t))
@@ -374,11 +382,18 @@
 ;(define t (make-table))
 ;(define bingo (make-bingo-table 3 9))
 ;(println bingo)
-;(bingo-3x3-map-stream (make-number-file-stream "27_11.txt") bingo find-winners-set bingo-3x3-histogram t)
 ;(map (lambda (x) (cons (number->binary-list (car x) 27) (cdr x))) (table->list t))
 
-(pretty-print (table->list (bingo-3x3-sheet-histogram-stream (make-bingo-sheet 3 9 4))))
-(pretty-print (table->list (bingo-3x3-sheet-histogram-stream (make-bingo-sheet 3 9 4))))
-(pretty-print (table->list (bingo-3x3-sheet-histogram-stream (make-bingo-sheet 3 9 4))))
-(pretty-print (table->list (bingo-3x3-sheet-histogram-stream (make-bingo-sheet 3 9 4))))
+;(define ns (read-number-stream (make-number-file-stream "27_11.txt") (lambda (x) x) cons '()))
+;(define nl (make-number-list-stream ns))
+;(pretty-print (table->list (bingo-3x3-sheet-histogram-stream nl (make-bingo-sheet 3 9 4))))
+;(set! nl (make-number-list-stream ns))
+;(random-source-randomize! default-random-source)
+;(pretty-print (table->list (bingo-3x3-sheet-histogram-stream nl (make-bingo-sheet 3 9 4))))
+;(set! nl (make-number-list-stream ns))
+;(random-source-randomize! default-random-source)
+;(pretty-print (table->list (bingo-3x3-sheet-histogram-stream nl (make-bingo-sheet 3 9 4))))
+;(set! nl (make-number-list-stream ns))
+;(random-source-randomize! default-random-source)
+;(pretty-print (table->list (bingo-3x3-sheet-histogram-stream nl (make-bingo-sheet 3 9 4))))
 
